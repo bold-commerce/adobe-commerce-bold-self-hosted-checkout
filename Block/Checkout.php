@@ -11,6 +11,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\ValidatorException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Store\Model\ScopeInterface;
@@ -21,8 +22,10 @@ use Magento\Theme\Block\Html\Header\Logo;
  */
 class Checkout extends Template
 {
-    public const APP_URL = 'checkout/bold_checkout_base/template_url';
-    public const TEMPLATE_TYPE = 'checkout/bold_checkout_base/template_type';
+    private const CONFIG_PATH_TEMPLATE_URL = 'checkout/bold_checkout_advanced/template_url';
+    private const CONFIG_PATH_TEMPLATE_TYPE = 'checkout/bold_checkout_base/template_type';
+    private const CONFIG_PATH_TEMPLATE_FILE = 'checkout/bold_checkout_base/template_file';
+    private const UPLOAD_DIR = 'bold/checkout/template';
 
     /**
      * @var Session
@@ -171,26 +174,29 @@ class Checkout extends Template
     }
 
     /**
-     * Get react app template url.
+     * Retrieve template script URL.
      *
      * @return string
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    public function getTemplateUrl(): string
+    public function getCheckoutTemplateScriptUrl(): string
     {
         $websiteId = (int)$this->checkoutSession->getQuote()->getStore()->getWebsiteId();
-        $reactAppUrl = $this->config->getValue(
-            self::APP_URL,
-            ScopeInterface::SCOPE_WEBSITES,
-            $websiteId
-        );
-        $templateType = $this->config->getValue(
-            self::TEMPLATE_TYPE,
-            ScopeInterface::SCOPE_WEBSITES,
-            $websiteId
-        );
-        return rtrim($reactAppUrl, '/') . '/' . $templateType . '.js';
+        $templateUrl = $this->getCheckoutTemplateUrl($websiteId);
+        $templateType = $this->getCheckoutTemplateType($websiteId);
+
+        if (!empty($templateUrl)) {
+            return rtrim($templateUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $templateType . '.js';
+        }
+
+        $templateFile = $this->getCheckoutTemplateFile($websiteId);
+        if (!empty($templateFile)) {
+            $mediaUrl = $this->checkoutSession->getQuote()->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+            return $mediaUrl . self::UPLOAD_DIR . DIRECTORY_SEPARATOR . $templateFile;
+        }
+
+        return $this->getViewFileUrl('Bold_CheckoutSelfHosted::js' . DIRECTORY_SEPARATOR . $templateType . '.js');
     }
 
     /**
@@ -211,5 +217,50 @@ class Checkout extends Template
     public function getPublicOrderId(): string
     {
         return $this->checkoutSession->getBoldCheckoutData()['data']['public_order_id'] ?? '';
+    }
+
+    /**
+     * Retrieve template URL.
+     *
+     * @param int $websiteId
+     * @return string|null
+     */
+    private function getCheckoutTemplateUrl(int $websiteId): ?string
+    {
+        return $this->config->getValue(
+            self::CONFIG_PATH_TEMPLATE_URL,
+            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId
+        );
+    }
+
+    /**
+     * Retrieve template type.
+     *
+     * @param int $websiteId
+     * @return string
+     */
+    private function getCheckoutTemplateType(int $websiteId): string
+    {
+        return $this->config->getValue(
+            self::CONFIG_PATH_TEMPLATE_TYPE,
+            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId
+        );
+    }
+
+    /**
+     * Retrieve template file.
+     *
+     * @param int $websiteId
+     * @return string|null
+     */
+    private function getCheckoutTemplateFile(int $websiteId): ?string
+    {
+        return $this->config->getValue(
+            self::CONFIG_PATH_TEMPLATE_FILE,
+            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId
+        );
     }
 }

@@ -4,14 +4,14 @@
     <system>
         <section id="checkout">
             <group id="bold_checkout_base">
-                <field id="template_type" translate="label" type="select" sortOrder="17" showInDefault="0" showInWebsite="1">
+                <field id="template_type" translate="label" type="select" sortOrder="17" showInDefault="1" showInWebsite="1">
                     <label>Self Hosted Checkout Template Type</label>
                     <source_model>Bold\CheckoutSelfHosted\Model\Config\Source\TemplateSourceType</source_model>
                     <depends>
                         <field id="type">3</field>
                     </depends>
                 </field>
-                <field id="template_file" translate="label" type="file" sortOrder="18" showInDefault="0" showInWebsite="1">
+                <field id="template_file" translate="label" type="file" sortOrder="18" showInDefault="1" showInWebsite="1">
                     <label>Self Hosted Checkout Template File</label>
                     <backend_model>Bold\CheckoutSelfHosted\Model\Config\Backend\File\Js</backend_model>
                     <depends>
@@ -27,7 +27,7 @@
                 </field>
             </group>
             <group id="bold_checkout_advanced">
-                <field id="template_url" translate="label" type="text" sortOrder="75" showInDefault="0" showInWebsite="1">
+                <field id="template_url" translate="label" type="text" sortOrder="75" showInDefault="1" showInWebsite="1">
                     <label>Self Hosted Checkout Experience Templates App Url</label>
                     <validate>required-url</validate>
                     <depends>

@@ -61,7 +61,7 @@ class Index implements ActionInterface, CspAwareActionInterface
     {
         $websiteId = $this->storeManager->getStore()->getWebsiteId();
         $reactAppUrl = $this->config->getValue(
-            'checkout/bold_checkout_base/template_url',
+            'checkout/bold_checkout_advanced/template_url',
             ScopeInterface::SCOPE_WEBSITES,
             $websiteId
         );

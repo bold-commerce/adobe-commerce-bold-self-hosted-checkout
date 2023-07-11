@@ -103,7 +103,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         $quote = $this->checkoutSession->getQuote();
-        if (!$this->config->isCheckoutTypeSelfHosted((int)$quote->getStore()->getWebsiteId())) {
+        if (!$this->config->isCheckoutTypeSelfHostedReact((int)$quote->getStore()->getWebsiteId())) {
             $this->redirectToBoldCheckoutObserver->execute($observer);
             return;
         }

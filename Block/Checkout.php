@@ -229,7 +229,7 @@ class Checkout extends Template
     {
         return $this->config->getValue(
             self::CONFIG_PATH_TEMPLATE_URL,
-            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $websiteId
         );
     }
@@ -244,7 +244,7 @@ class Checkout extends Template
     {
         return $this->config->getValue(
             self::CONFIG_PATH_TEMPLATE_TYPE,
-            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $websiteId
         );
     }
@@ -259,7 +259,7 @@ class Checkout extends Template
     {
         return $this->config->getValue(
             self::CONFIG_PATH_TEMPLATE_FILE,
-            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $websiteId
         );
     }

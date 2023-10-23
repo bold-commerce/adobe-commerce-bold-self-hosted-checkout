@@ -62,7 +62,7 @@ class Index implements ActionInterface, CspAwareActionInterface
         $websiteId = $this->storeManager->getStore()->getWebsiteId();
         $reactAppUrl = $this->config->getValue(
             'checkout/bold_checkout_advanced/template_url',
-            ScopeInterface::SCOPE_WEBSITES,
+            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $websiteId
         );
         $appliedPolicies[] = new FetchPolicy(

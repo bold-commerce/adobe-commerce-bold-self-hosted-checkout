@@ -87,7 +87,7 @@ class CreateCheckoutUrlRewritesObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         $event = $observer->getEvent();
-        $websiteId = (int)$event->getWebsite();
+        $websiteId = (int)$event->getWebsite() ?: (int)$this->storeManager->getWebsite(true)->getId();
         if (!$this->config->isCheckoutEnabled($websiteId)) {
             return;
         }

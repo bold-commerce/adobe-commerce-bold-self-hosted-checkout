@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Bold\CheckoutSelfHosted\Block;
 
+use Bold\Checkout\Api\ConfigManagementInterface;
 use Bold\Checkout\Model\ConfigInterface;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
@@ -14,6 +15,7 @@ use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Store\Model\Information;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Theme\Block\Html\Header\Logo;
 
@@ -22,7 +24,7 @@ use Magento\Theme\Block\Html\Header\Logo;
  */
 class Checkout extends Template
 {
-    private const CONFIG_PATH_TEMPLATE_URL = 'checkout/bold_checkout_advanced/template_url';
+    public const CONFIG_PATH_TEMPLATE_URL = 'checkout/bold_checkout_advanced/template_url';
     private const CONFIG_PATH_TEMPLATE_TYPE = 'checkout/bold_checkout_base/template_type';
     private const CONFIG_PATH_TEMPLATE_FILE = 'checkout/bold_checkout_base/template_file';
     private const UPLOAD_DIR = 'bold/checkout/template';
@@ -45,7 +47,12 @@ class Checkout extends Template
     /**
      * @var ScopeConfigInterface
      */
-    private $config;
+    private $scopeConfig;
+
+    /**
+     * @var ConfigManagementInterface
+     */
+    private $configManagement;
 
     /**
      * @var Logo
@@ -57,12 +64,13 @@ class Checkout extends Template
      */
     private $messageManager;
 
+
     /**
      * @param Context $context
      * @param Session $checkoutSession
      * @param Json $serializer
      * @param ConfigInterface $checkoutConfig
-     * @param ScopeConfigInterface $config
+     * @param ScopeConfigInterface $scopeConfig
      * @param Logo $logo
      * @param ManagerInterface $messageManager
      * @param array $data
@@ -72,7 +80,8 @@ class Checkout extends Template
         Session $checkoutSession,
         Json $serializer,
         ConfigInterface $checkoutConfig,
-        ScopeConfigInterface $config,
+        ScopeConfigInterface $scopeConfig,
+        ConfigManagementInterface $configManagement,
         Logo $logo,
         ManagerInterface $messageManager,
         array $data = []
@@ -81,7 +90,8 @@ class Checkout extends Template
         $this->checkoutSession = $checkoutSession;
         $this->serializer = $serializer;
         $this->checkoutConfig = $checkoutConfig;
-        $this->config = $config;
+        $this->scopeConfig = $scopeConfig;
+        $this->configManagement = $configManagement;
         $this->logo = $logo;
         $this->messageManager = $messageManager;
     }
@@ -146,7 +156,7 @@ class Checkout extends Template
     {
         $checkoutData = $this->checkoutSession->getBoldCheckoutData();
         $boldShopName = $checkoutData['data']['initial_data']['shop_name'] ?? '';
-        return $this->config->getValue('general/store_information/name') ?: $boldShopName;
+        return $this->scopeConfig->getValue(Information::XML_PATH_STORE_INFO_NAME) ?: $boldShopName;
     }
 
     /**
@@ -227,9 +237,8 @@ class Checkout extends Template
      */
     private function getCheckoutTemplateUrl(int $websiteId): ?string
     {
-        return $this->config->getValue(
+        return $this->configManagement->getValue(
             self::CONFIG_PATH_TEMPLATE_URL,
-            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $websiteId
         );
     }
@@ -242,9 +251,8 @@ class Checkout extends Template
      */
     private function getCheckoutTemplateType(int $websiteId): string
     {
-        return $this->config->getValue(
+        return $this->configManagement->getValue(
             self::CONFIG_PATH_TEMPLATE_TYPE,
-            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $websiteId
         );
     }
@@ -257,9 +265,8 @@ class Checkout extends Template
      */
     private function getCheckoutTemplateFile(int $websiteId): ?string
     {
-        return $this->config->getValue(
+        return $this->configManagement->getValue(
             self::CONFIG_PATH_TEMPLATE_FILE,
-            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $websiteId
         );
     }

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Bold\CheckoutSelfHosted\Controller\Index;
 
+use Bold\Checkout\Api\ConfigManagementInterface;
+use Bold\CheckoutSelfHosted\Block\Checkout;
 use Magento\Csp\Api\CspAwareActionInterface;
 use Magento\Csp\Model\Policy\FetchPolicy;
 use Magento\Framework\App\ActionInterface;
@@ -17,33 +19,33 @@ use Magento\Store\Model\StoreManagerInterface;
 class Index implements ActionInterface, CspAwareActionInterface
 {
     /**
-     * @var PageFactory
-     */
-    private $resultPageFactory;
-
-    /**
      * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * @var ScopeConfigInterface
+     * @var ConfigManagementInterface
      */
-    private $config;
+    private $configManagement;
+
+    /**
+     * @var PageFactory
+     */
+    private $resultPageFactory;
 
     /**
      * @param StoreManagerInterface $storeManager
-     * @param ScopeConfigInterface $config
+     * @param ConfigManagementInterface $configManagement
      * @param PageFactory $resultPageFactory
      */
     public function __construct(
         StoreManagerInterface $storeManager,
-        ScopeConfigInterface $config,
+        ConfigManagementInterface $configManagement,
         PageFactory $resultPageFactory
     ) {
-        $this->resultPageFactory = $resultPageFactory;
         $this->storeManager = $storeManager;
-        $this->config = $config;
+        $this->configManagement = $configManagement;
+        $this->resultPageFactory = $resultPageFactory;
     }
 
     /**
@@ -60,9 +62,8 @@ class Index implements ActionInterface, CspAwareActionInterface
     public function modifyCsp(array $appliedPolicies): array
     {
         $websiteId = $this->storeManager->getStore()->getWebsiteId();
-        $reactAppUrl = $this->config->getValue(
-            'checkout/bold_checkout_advanced/template_url',
-            $websiteId ? ScopeInterface::SCOPE_WEBSITES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+        $reactAppUrl = $this->configManagement->getValue(
+            Checkout::CONFIG_PATH_TEMPLATE_URL,
             $websiteId
         );
         $appliedPolicies[] = new FetchPolicy(

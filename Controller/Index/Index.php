@@ -61,7 +61,7 @@ class Index implements ActionInterface, CspAwareActionInterface
      */
     public function modifyCsp(array $appliedPolicies): array
     {
-        $websiteId = $this->storeManager->getStore()->getWebsiteId();
+        $websiteId = (int)$this->storeManager->getStore()->getWebsiteId();
         $reactAppUrl = $this->configManagement->getValue(
             Checkout::CONFIG_PATH_TEMPLATE_URL,
             $websiteId

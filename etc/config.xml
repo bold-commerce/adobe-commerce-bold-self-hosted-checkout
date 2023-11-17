@@ -2,6 +2,9 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <checkout>
+            <bold_checkout_base>
+                <template_type>three_page</template_type>
+            </bold_checkout_base>
             <bold_checkout_advanced>
                 <template_url/>
             </bold_checkout_advanced>

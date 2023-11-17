@@ -6,4 +6,9 @@
             <argument name="client" xsi:type="object">Bold\Checkout\Model\Http\BoldClient</argument>
         </arguments>
     </type>
+    <type name="Bold\CheckoutSelfHosted\Observer\RedirectToBoldCheckoutObserver">
+        <arguments>
+            <argument name="client" xsi:type="object">Bold\Checkout\Model\Http\BoldStorefrontClient</argument>
+        </arguments>
+    </type>
 </config>

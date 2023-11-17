@@ -196,12 +196,12 @@ class Checkout extends Template
         $templateUrl = $this->getCheckoutTemplateUrl($websiteId);
         $templateType = $this->getCheckoutTemplateType($websiteId);
 
-        if (!empty($templateUrl)) {
+        if ($templateUrl) {
             return rtrim($templateUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $templateType . '.js';
         }
 
         $templateFile = $this->getCheckoutTemplateFile($websiteId);
-        if (!empty($templateFile)) {
+        if ($templateFile) {
             $mediaUrl = $this->checkoutSession->getQuote()->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
             return $mediaUrl . self::UPLOAD_DIR . DIRECTORY_SEPARATOR . $templateFile;
         }

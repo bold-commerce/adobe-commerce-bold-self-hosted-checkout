@@ -11,4 +11,11 @@
             <argument name="client" xsi:type="object">Bold\Checkout\Model\Http\BoldStorefrontClient</argument>
         </arguments>
     </type>
+    <type name="Bold\Checkout\Model\ModuleInfo\InstalledModulesProvider">
+        <arguments>
+            <argument name="moduleList" xsi:type="array">
+                <item name="bold_checkout_self_hosted" xsi:type="string">Bold_CheckoutSelfHosted</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

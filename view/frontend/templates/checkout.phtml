@@ -9,7 +9,7 @@ try {
     $orderData = $this->getOrderData();
     $orderId = $this->getPublicOrderId();
 } catch (Exception $e) {
-    echo '<script>window.location.href = "' . $escaper->escapeJs($this->getReturnUrl()) . '"</script>';
+    echo '<script>window.location.href = "' . $escaper->escapeUrl($this->getReturnUrl()) . '"</script>';
     return;
 }
 ?>
@@ -32,6 +32,6 @@ try {
     window.initializedOrder = <?php echo $orderData ?>;
 </script>
 <div id='main'>
-    <script src="<?php echo $escaper->escapeJs($this->getCheckoutTemplateScriptUrl()) ?>"></script>
+    <script src="<?php echo $escaper->escapeUrl($this->getCheckoutTemplateScriptUrl()) ?>"></script>
 </div>
 <footer></footer>

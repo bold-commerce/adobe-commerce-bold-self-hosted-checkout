@@ -28,6 +28,7 @@ class Checkout extends Template
     private const CONFIG_PATH_TEMPLATE_TYPE = 'checkout/bold_checkout_base/template_type';
     private const CONFIG_PATH_TEMPLATE_FILE = 'checkout/bold_checkout_base/template_file';
     private const UPLOAD_DIR = 'bold/checkout/template';
+    private const HOSTED_TEMPLATE_URL = 'https://cashier.boldcommerce.com/assets/experience/';
 
     /**
      * @var Session
@@ -206,7 +207,7 @@ class Checkout extends Template
             return $mediaUrl . self::UPLOAD_DIR . DIRECTORY_SEPARATOR . $templateFile;
         }
 
-        return $this->getViewFileUrl('Bold_CheckoutSelfHosted::js' . DIRECTORY_SEPARATOR . $templateType . '.js');
+        return self::HOSTED_TEMPLATE_URL . $templateType . '.js';
     }
 
     /**

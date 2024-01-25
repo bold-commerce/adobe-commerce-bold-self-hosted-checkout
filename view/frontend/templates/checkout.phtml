@@ -4,21 +4,22 @@
  *
  * @var Bold\CheckoutSelfHosted\Block\Checkout $this
  */
+/** @var Magento\Framework\Escaper $escaper */
 try {
     $orderData = $this->getOrderData();
     $orderId = $this->getPublicOrderId();
 } catch (Exception $e) {
-    echo '<script>window.location.href = "' . $this->getReturnUrl() . '"</script>';
+    echo '<script>window.location.href = "' . $escaper->escapeJs($this->getReturnUrl()) . '"</script>';
     return;
 }
 ?>
 <script>
-    window.shopAlias = "<?php echo $this->getShopAlias() ?>";
-    window.customDomain = "<?php echo $this->getCustomDomain() ?>";
-    window.shopName = "<?php echo $this->getShopName() ?>";
-    window.returnUrl = "<?php echo $this->getReturnUrl() ?>";
-    window.loginUrl = "<?php echo $this->getLoginUrl() ?>";
-    window.headerLogoUrl = "<?php echo $this->getHeaderLogoUrl() ?>";
+    window.shopAlias = "<?php echo $escaper->escapeJs($this->getShopAlias()) ?>";
+    window.customDomain = "<?php echo $escaper->escapeJs($this->getCustomDomain()) ?>";
+    window.shopName = "<?php echo $escaper->escapeJs($this->getShopName()) ?>";
+    window.returnUrl = "<?php echo $escaper->escapeJs($this->getReturnUrl()) ?>";
+    window.loginUrl = "<?php echo $escaper->escapeJs($this->getLoginUrl()) ?>";
+    window.headerLogoUrl = "<?php echo $escaper->escapeJs($this->getHeaderLogoUrl()) ?>";
     window.platformType = "bold_platform";
     window.environment = {
         type: "production",
@@ -26,11 +27,11 @@ try {
     window.initializedOrder = {
         data: <?php echo $orderData; ?>
     };
-    window.publicOrderId = "<?php echo $orderId; ?>";
-    window.shopIdentifier = "<?php echo $this->getShopIdentifier(); ?>";
-    window.initializedOrder = <?php echo $orderData; ?>;
+    window.publicOrderId = "<?php echo $escaper->escapeJs($orderId) ?>";
+    window.shopIdentifier = "<?php echo $escaper->escapeJs($this->getShopIdentifier()) ?>";
+    window.initializedOrder = <?php echo $orderData ?>;
 </script>
 <div id='main'>
-    <script src="<?php echo $this->getCheckoutTemplateScriptUrl() ?>"></script>
+    <script src="<?php echo $escaper->escapeJs($this->getCheckoutTemplateScriptUrl()) ?>"></script>
 </div>
 <footer></footer>

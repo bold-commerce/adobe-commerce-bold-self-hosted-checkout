@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Bold\CheckoutSelfHosted\Block;
 
-use Bold\Checkout\Api\ConfigManagementInterface;
 use Bold\Checkout\Model\ConfigInterface;
+use Bold\CheckoutSelfHosted\Model\Config;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -16,7 +16,6 @@ use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Store\Model\Information;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Theme\Block\Html\Header\Logo;
 
 /**
@@ -24,9 +23,6 @@ use Magento\Theme\Block\Html\Header\Logo;
  */
 class Checkout extends Template
 {
-    public const CONFIG_PATH_TEMPLATE_URL = 'checkout/bold_checkout_advanced/template_url';
-    private const CONFIG_PATH_TEMPLATE_TYPE = 'checkout/bold_checkout_base/template_type';
-    private const CONFIG_PATH_TEMPLATE_FILE = 'checkout/bold_checkout_base/template_file';
     private const UPLOAD_DIR = 'bold/checkout/template';
     private const HOSTED_TEMPLATE_URL = 'https://cashier.boldcommerce.com/assets/experience/';
 
@@ -51,9 +47,9 @@ class Checkout extends Template
     private $scopeConfig;
 
     /**
-     * @var ConfigManagementInterface
+     * @var Config
      */
-    private $configManagement;
+    private $config;
 
     /**
      * @var Logo
@@ -65,13 +61,13 @@ class Checkout extends Template
      */
     private $messageManager;
 
-
     /**
      * @param Context $context
      * @param Session $checkoutSession
      * @param Json $serializer
      * @param ConfigInterface $checkoutConfig
      * @param ScopeConfigInterface $scopeConfig
+     * @param Config $config
      * @param Logo $logo
      * @param ManagerInterface $messageManager
      * @param array $data
@@ -82,7 +78,7 @@ class Checkout extends Template
         Json $serializer,
         ConfigInterface $checkoutConfig,
         ScopeConfigInterface $scopeConfig,
-        ConfigManagementInterface $configManagement,
+        Config $config,
         Logo $logo,
         ManagerInterface $messageManager,
         array $data = []
@@ -92,7 +88,7 @@ class Checkout extends Template
         $this->serializer = $serializer;
         $this->checkoutConfig = $checkoutConfig;
         $this->scopeConfig = $scopeConfig;
-        $this->configManagement = $configManagement;
+        $this->config = $config;
         $this->logo = $logo;
         $this->messageManager = $messageManager;
     }
@@ -112,6 +108,7 @@ class Checkout extends Template
             );
             throw new ValidatorException(__('Bold Checkout data is missing.'));
         }
+
         return $this->serializer->serialize($boldCheckoutData);
     }
 
@@ -125,6 +122,7 @@ class Checkout extends Template
     public function getShopIdentifier(): string
     {
         $websiteId = (int)$this->checkoutSession->getQuote()->getStore()->getWebsiteId();
+
         return $this->checkoutConfig->getShopId($websiteId);
     }
 
@@ -157,6 +155,7 @@ class Checkout extends Template
     {
         $checkoutData = $this->checkoutSession->getBoldCheckoutData();
         $boldShopName = $checkoutData['data']['initial_data']['shop_name'] ?? '';
+
         return $this->scopeConfig->getValue(Information::XML_PATH_STORE_INFO_NAME) ?: $boldShopName;
     }
 
@@ -204,6 +203,7 @@ class Checkout extends Template
         $templateFile = $this->getCheckoutTemplateFile($websiteId);
         if ($templateFile) {
             $mediaUrl = $this->checkoutSession->getQuote()->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+
             return $mediaUrl . self::UPLOAD_DIR . DIRECTORY_SEPARATOR . $templateFile;
         }
 
@@ -238,10 +238,7 @@ class Checkout extends Template
      */
     private function getCheckoutTemplateUrl(int $websiteId): ?string
     {
-        return $this->configManagement->getValue(
-            self::CONFIG_PATH_TEMPLATE_URL,
-            $websiteId
-        );
+        return $this->config->getCheckoutTemplateUrl($websiteId);
     }
 
     /**
@@ -252,10 +249,7 @@ class Checkout extends Template
      */
     private function getCheckoutTemplateType(int $websiteId): string
     {
-        return $this->configManagement->getValue(
-            self::CONFIG_PATH_TEMPLATE_TYPE,
-            $websiteId
-        );
+        return $this->config->getCheckoutTemplateType($websiteId);
     }
 
     /**
@@ -266,9 +260,6 @@ class Checkout extends Template
      */
     private function getCheckoutTemplateFile(int $websiteId): ?string
     {
-        return $this->configManagement->getValue(
-            self::CONFIG_PATH_TEMPLATE_FILE,
-            $websiteId
-        );
+        return $this->config->getCheckoutTemplateFile($websiteId);
     }
 }

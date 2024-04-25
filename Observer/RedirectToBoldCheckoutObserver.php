@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Bold\CheckoutSelfHosted\Observer;
 
 use Bold\Checkout\Api\Http\ClientInterface;
-use Bold\Checkout\Model\ConfigInterface;
 use Bold\Checkout\Model\IsBoldCheckoutAllowedForRequest;
 use Bold\Checkout\Model\Order\InitOrderFromQuote;
 use Bold\Checkout\Model\Quote\IsBoldCheckoutAllowedForCart;
 use Bold\Checkout\Observer\Checkout\RedirectToBoldCheckoutObserver as RedirectToBoldCheckout;
+use Bold\CheckoutSelfHosted\Model\Config;
 use Exception;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Event\Observer;
@@ -48,7 +48,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
     private $initOrderFromQuote;
 
     /**
-     * @var ConfigInterface
+     * @var Config
      */
     private $config;
 
@@ -68,7 +68,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
      * @param IsBoldCheckoutAllowedForRequest $allowedForRequest
      * @param Session $checkoutSession
      * @param InitOrderFromQuote $initOrderFromQuote
-     * @param ConfigInterface $config
+     * @param Config $config
      * @param ClientInterface $client
      * @param LoggerInterface $logger
      */
@@ -78,7 +78,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
         IsBoldCheckoutAllowedForRequest $allowedForRequest,
         Session $checkoutSession,
         InitOrderFromQuote $initOrderFromQuote,
-        ConfigInterface $config,
+        Config $config,
         ClientInterface $client,
         LoggerInterface $logger
     ) {
@@ -103,7 +103,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         $quote = $this->checkoutSession->getQuote();
-        if (!$this->config->isCheckoutTypeSelfHostedReact((int)$quote->getStore()->getWebsiteId())) {
+        if (!$this->config->isEnabled((int)$quote->getStore()->getWebsiteId())) {
             $this->redirectToBoldCheckoutObserver->execute($observer);
             return;
         }

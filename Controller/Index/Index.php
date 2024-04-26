@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Bold\CheckoutSelfHosted\Controller\Index;
 
-use Bold\Checkout\Api\ConfigManagementInterface;
 use Bold\CheckoutSelfHosted\Model\Config;
 use Magento\Csp\Api\CspAwareActionInterface;
 use Magento\Csp\Model\Policy\FetchPolicy;
@@ -22,7 +21,7 @@ class Index implements ActionInterface, CspAwareActionInterface
     private $storeManager;
 
     /**
-     * @var ConfigManagementInterface
+     * @var Config
      */
     private $config;
 
@@ -60,11 +59,16 @@ class Index implements ActionInterface, CspAwareActionInterface
     public function modifyCsp(array $appliedPolicies): array
     {
         $websiteId = (int)$this->storeManager->getStore()->getWebsiteId();
-        $reactAppUrl = $this->config->getCheckoutTemplateUrl($websiteId);
+        $checkoutTemplateUrl = $this->config->getCheckoutTemplateUrl($websiteId);
+
+        if (!$checkoutTemplateUrl) {
+            return $appliedPolicies;
+        }
+
         $appliedPolicies[] = new FetchPolicy(
             'script-src',
             false,
-            [$reactAppUrl],
+            [$checkoutTemplateUrl],
             ['https']
         );
 

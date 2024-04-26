@@ -103,7 +103,8 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
     public function execute(Observer $observer)
     {
         $quote = $this->checkoutSession->getQuote();
-        if (!$this->config->isEnabled((int)$quote->getStore()->getWebsiteId())) {
+        $websiteId = (int)$quote->getStore()->getWebsiteId();
+        if (!$this->config->isEnabled($websiteId)) {
             $this->redirectToBoldCheckoutObserver->execute($observer);
             return;
         }
@@ -117,7 +118,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
         try {
             $checkoutData = $this->initOrderFromQuote->init($quote);
             $this->checkoutSession->setBoldCheckoutData($checkoutData);
-            $this->client->get((int)$quote->getStore()->getWebsiteId(), 'refresh');
+            $this->client->get($websiteId, 'refresh');
             $checkoutUrl = $quote->getStore()->getUrl('experience/index/index');
             $observer->getControllerAction()->getResponse()->setRedirect($checkoutUrl);
         } catch (Exception $exception) {

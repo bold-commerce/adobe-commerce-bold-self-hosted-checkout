@@ -7,6 +7,7 @@ use Bold\Checkout\Api\Http\ClientInterface;
 use Bold\Checkout\Model\IsBoldCheckoutAllowedForRequest;
 use Bold\Checkout\Model\Order\InitOrderFromQuote;
 use Bold\Checkout\Model\Quote\IsBoldCheckoutAllowedForCart;
+use Bold\Checkout\Model\Quote\SetQuoteExtensionData;
 use Bold\Checkout\Observer\Checkout\RedirectToBoldCheckoutObserver as RedirectToBoldCheckout;
 use Bold\CheckoutSelfHosted\Model\Config;
 use Exception;
@@ -63,6 +64,11 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
     private $logger;
 
     /**
+     * @var SetQuoteExtensionData
+     */
+    private $setQuoteExtensionData;
+
+    /**
      * @param RedirectToBoldCheckout $redirectToBoldCheckoutObserver
      * @param IsBoldCheckoutAllowedForCart $allowedForCart
      * @param IsBoldCheckoutAllowedForRequest $allowedForRequest
@@ -80,7 +86,8 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
         InitOrderFromQuote $initOrderFromQuote,
         Config $config,
         ClientInterface $client,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        SetQuoteExtensionData $setQuoteExtensionData
     ) {
         $this->redirectToBoldCheckoutObserver = $redirectToBoldCheckoutObserver;
         $this->allowedForCart = $allowedForCart;
@@ -90,6 +97,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
         $this->config = $config;
         $this->client = $client;
         $this->logger = $logger;
+        $this->setQuoteExtensionData = $setQuoteExtensionData;
     }
 
     /**
@@ -116,6 +124,8 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
         }
         try {
             $checkoutData = $this->initOrderFromQuote->init($quote);
+            // We are overriding all other Bold flows.
+            $this->setQuoteExtensionData->execute((int)$quote->getId(), false);
             $this->checkoutSession->setBoldCheckoutData($checkoutData);
             $this->client->get((int)$quote->getStore()->getWebsiteId(), 'refresh');
             $checkoutUrl = $quote->getStore()->getUrl('experience/index/index');

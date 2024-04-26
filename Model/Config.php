@@ -28,7 +28,7 @@ class Config
 
 
     /**
-     * Retrieve template URL.
+     * Is self-hosted functionality enabled.
      *
      * @param int $websiteId
      * @return bool

@@ -193,14 +193,14 @@ class Checkout extends Template
     public function getCheckoutTemplateScriptUrl(): string
     {
         $websiteId = (int)$this->checkoutSession->getQuote()->getStore()->getWebsiteId();
-        $templateUrl = $this->getCheckoutTemplateUrl($websiteId);
-        $templateType = $this->getCheckoutTemplateType($websiteId);
+        $templateUrl = $this->config->getCheckoutTemplateUrl($websiteId);
+        $templateType = $this->config->getCheckoutTemplateType($websiteId);
 
         if ($templateUrl) {
             return rtrim($templateUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $templateType . '.js';
         }
 
-        $templateFile = $this->getCheckoutTemplateFile($websiteId);
+        $templateFile = $this->config->getCheckoutTemplateFile($websiteId);
         if ($templateFile) {
             $mediaUrl = $this->checkoutSession->getQuote()->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
 
@@ -221,45 +221,12 @@ class Checkout extends Template
     }
 
     /**
-     * Retrieve public order id from bold checkout data.
+     * Retrieve public order ID from Bold checkout data.
      *
      * @return string
      */
     public function getPublicOrderId(): string
     {
         return $this->checkoutSession->getBoldCheckoutData()['data']['public_order_id'] ?? '';
-    }
-
-    /**
-     * Retrieve template URL.
-     *
-     * @param int $websiteId
-     * @return string|null
-     */
-    private function getCheckoutTemplateUrl(int $websiteId): ?string
-    {
-        return $this->config->getCheckoutTemplateUrl($websiteId);
-    }
-
-    /**
-     * Retrieve template type.
-     *
-     * @param int $websiteId
-     * @return string
-     */
-    private function getCheckoutTemplateType(int $websiteId): string
-    {
-        return $this->config->getCheckoutTemplateType($websiteId);
-    }
-
-    /**
-     * Retrieve template file.
-     *
-     * @param int $websiteId
-     * @return string|null
-     */
-    private function getCheckoutTemplateFile(int $websiteId): ?string
-    {
-        return $this->config->getCheckoutTemplateFile($websiteId);
     }
 }

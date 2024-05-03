@@ -6,6 +6,11 @@
                 <value id="bold_commerce" type="host">https://api.boldcommerce.com</value>
             </values>
         </policy>
+        <policy id="script-src">
+            <values>
+                <value id="cashier" type="host">https://cashier.boldcommerce.com</value>
+            </values>
+        </policy>
         <policy id="frame-src">
             <values>
                 <value id="bold_commerce" type="host">https://api.boldcommerce.com</value>

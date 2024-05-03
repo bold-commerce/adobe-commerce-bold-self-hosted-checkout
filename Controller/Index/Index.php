@@ -3,14 +3,11 @@ declare(strict_types=1);
 
 namespace Bold\CheckoutSelfHosted\Controller\Index;
 
-use Bold\Checkout\Api\ConfigManagementInterface;
-use Bold\CheckoutSelfHosted\Block\Checkout;
+use Bold\CheckoutSelfHosted\Model\Config;
 use Magento\Csp\Api\CspAwareActionInterface;
 use Magento\Csp\Model\Policy\FetchPolicy;
 use Magento\Framework\App\ActionInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\View\Result\PageFactory;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -24,9 +21,9 @@ class Index implements ActionInterface, CspAwareActionInterface
     private $storeManager;
 
     /**
-     * @var ConfigManagementInterface
+     * @var Config
      */
-    private $configManagement;
+    private $config;
 
     /**
      * @var PageFactory
@@ -35,16 +32,16 @@ class Index implements ActionInterface, CspAwareActionInterface
 
     /**
      * @param StoreManagerInterface $storeManager
-     * @param ConfigManagementInterface $configManagement
+     * @param Config $config
      * @param PageFactory $resultPageFactory
      */
     public function __construct(
         StoreManagerInterface $storeManager,
-        ConfigManagementInterface $configManagement,
+        Config $config,
         PageFactory $resultPageFactory
     ) {
         $this->storeManager = $storeManager;
-        $this->configManagement = $configManagement;
+        $this->config = $config;
         $this->resultPageFactory = $resultPageFactory;
     }
 
@@ -62,14 +59,16 @@ class Index implements ActionInterface, CspAwareActionInterface
     public function modifyCsp(array $appliedPolicies): array
     {
         $websiteId = (int)$this->storeManager->getStore()->getWebsiteId();
-        $reactAppUrl = $this->configManagement->getValue(
-            Checkout::CONFIG_PATH_TEMPLATE_URL,
-            $websiteId
-        );
+        $checkoutTemplateUrl = $this->config->getCheckoutTemplateUrl($websiteId);
+
+        if (!$checkoutTemplateUrl) {
+            return $appliedPolicies;
+        }
+
         $appliedPolicies[] = new FetchPolicy(
             'script-src',
             false,
-            [$reactAppUrl],
+            [$checkoutTemplateUrl],
             ['https']
         );
 

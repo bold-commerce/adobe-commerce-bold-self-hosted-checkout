@@ -11,6 +11,9 @@ use Magento\Framework\View\Result\PageFactory;
  */
 class IndexNoCsp implements ActionInterface
 {
+    /**
+     * @var PageFactory
+     */
     private $resultPageFactory;
 
     /**

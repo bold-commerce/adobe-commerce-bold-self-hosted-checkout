@@ -27,6 +27,7 @@ class ActionListPlugin
         if ($result !== Index::class) {
             return $result;
         }
+
         return \interface_exists(CspAwareActionInterface::class) ? Index::class : IndexNoCsp::class;
     }
 }

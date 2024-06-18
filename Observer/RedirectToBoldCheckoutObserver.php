@@ -8,6 +8,7 @@ use Bold\Checkout\Model\IsBoldCheckoutAllowedForRequest;
 use Bold\Checkout\Model\Order\InitOrderFromQuote;
 use Bold\Checkout\Model\Quote\IsBoldCheckoutAllowedForCart;
 use Bold\Checkout\Model\Quote\SetQuoteExtensionData;
+use Bold\Checkout\Model\ResourceModel\Quote\QuoteExtensionData;
 use Bold\Checkout\Observer\Checkout\RedirectToBoldCheckoutObserver as RedirectToBoldCheckout;
 use Bold\CheckoutSelfHosted\Model\Config;
 use Exception;
@@ -77,6 +78,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
      * @param Config $config
      * @param ClientInterface $client
      * @param LoggerInterface $logger
+     * @param SetQuoteExtensionData $setQuoteExtensionData
      */
     public function __construct(
         RedirectToBoldCheckout $redirectToBoldCheckoutObserver,
@@ -126,7 +128,7 @@ class RedirectToBoldCheckoutObserver implements ObserverInterface
         try {
             $checkoutData = $this->initOrderFromQuote->init($quote);
             // We are overriding all other Bold flows.
-            $this->setQuoteExtensionData->execute((int)$quote->getId(), false);
+            $this->setQuoteExtensionData->execute((int)$quote->getId(), [QuoteExtensionData::ORDER_CREATED => false]);
             $this->checkoutSession->setBoldCheckoutData($checkoutData);
             $this->client->get($websiteId, 'refresh');
             $checkoutUrl = $quote->getStore()->getUrl('experience/index/index');

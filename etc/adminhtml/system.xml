@@ -3,19 +3,30 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <section id="checkout">
-            <group id="bold_checkout_base">
-                <field id="template_type" translate="label" type="select" sortOrder="17" showInDefault="1" showInWebsite="1">
-                    <label>Self Hosted Checkout Template Type</label>
+            <group id="bold_checkout_self_hosted" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1">
+                <label>Bold Checkout Self-Hosted Extension</label>
+                <field id="is_enabled" translate="label" type="select" sortOrder="10" showInDefault="1"
+                       showInWebsite="1">
+                    <label>Is Bold Checkout Self-Hosted Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[
+                        Replace the native checkout with Bold Checkout's <a target='_blank' href="https://github.com/bold-commerce/checkout-experience-templates">Open Source Checkout Templates</a>.
+                    ]]></comment>
+                </field>
+                <field id="template_type" translate="label" type="select" sortOrder="17" showInDefault="1"
+                       showInWebsite="1">
+                    <label>Template Type</label>
                     <source_model>Bold\CheckoutSelfHosted\Model\Config\Source\TemplateSourceType</source_model>
                     <depends>
-                        <field id="type">3</field>
+                        <field id="is_enabled">1</field>
                     </depends>
                 </field>
-                <field id="template_file" translate="label" type="file" sortOrder="18" showInDefault="1" showInWebsite="1">
-                    <label>Self Hosted Checkout Template File</label>
+                <field id="template_file" translate="label" type="file" sortOrder="18" showInDefault="1"
+                       showInWebsite="1">
+                    <label>Template File</label>
                     <backend_model>Bold\CheckoutSelfHosted\Model\Config\Backend\File\Js</backend_model>
                     <depends>
-                        <field id="type">3</field>
+                        <field id="is_enabled">1</field>
                     </depends>
                     <upload_dir config="system/filesystem/media" scope_info="1">bold/checkout/template</upload_dir>
                     <base_url type="media" scope_info="1">bold/checkout/template</base_url>
@@ -25,13 +36,12 @@
                         If no one file uploaded, standard will be used as fallback.
                     ]]></comment>
                 </field>
-            </group>
-            <group id="bold_checkout_advanced">
-                <field id="template_url" translate="label" type="text" sortOrder="75" showInDefault="1" showInWebsite="1">
-                    <label>Self Hosted Checkout Experience Templates App Url</label>
+                <field id="template_url" translate="label" type="text" sortOrder="75" showInDefault="1"
+                       showInWebsite="1">
+                    <label>Checkout Experience Templates App Url</label>
                     <validate>required-url</validate>
                     <depends>
-                        <field id="checkout/bold_checkout_base/type">3</field>
+                        <field id="is_enabled">1</field>
                     </depends>
                     <comment><![CDATA[
                         Example: http://localhost:8080<br>

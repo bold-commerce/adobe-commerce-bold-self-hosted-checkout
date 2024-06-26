@@ -22,7 +22,7 @@ try {
     window.headerLogoUrl = "<?php echo $escaper->escapeJs($this->getHeaderLogoUrl()) ?>";
     window.platformType = "bold_platform";
     window.environment = {
-        type: "production",
+        type: "<?php echo $escaper->escapeJs($this->getEnvironmentType()) ?>",
     };
     window.initializedOrder = {
         data: <?php echo $orderData; ?>

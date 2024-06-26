@@ -11,6 +11,7 @@ class Config
     private const PATH_TEMPLATE_TYPE = 'checkout/bold_checkout_self_hosted/template_type';
     private const PATH_TEMPLATE_FILE = 'checkout/bold_checkout_self_hosted/template_file';
     private const PATH_TEMPLATE_URL = 'checkout/bold_checkout_self_hosted/template_url';
+    private const PATH_ENVIRONMENT_TYPE = 'checkout/bold_checkout_self_hosted/environment_type';
 
     /**
      * @var ConfigManagementInterface
@@ -79,6 +80,20 @@ class Config
     {
         return $this->configManagement->getValue(
             self::PATH_TEMPLATE_FILE,
+            $websiteId
+        );
+    }
+
+    /**
+     * Retrieve environment type.
+     *
+     * @param int $websiteId
+     * @return string
+     */
+    public function getEnvironmentType(int $websiteId): string
+    {
+        return $this->configManagement->getValue(
+            self::PATH_ENVIRONMENT_TYPE,
             $websiteId
         );
     }

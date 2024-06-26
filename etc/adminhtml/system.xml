@@ -13,7 +13,7 @@
                         Replace the native checkout with Bold Checkout's <a target='_blank' href="https://github.com/bold-commerce/checkout-experience-templates">Open Source Checkout Templates</a>.
                     ]]></comment>
                 </field>
-                <field id="template_type" translate="label" type="select" sortOrder="17" showInDefault="1"
+                <field id="template_type" translate="label" type="select" sortOrder="15" showInDefault="1"
                        showInWebsite="1">
                     <label>Template Type</label>
                     <source_model>Bold\CheckoutSelfHosted\Model\Config\Source\TemplateSourceType</source_model>
@@ -21,7 +21,7 @@
                         <field id="is_enabled">1</field>
                     </depends>
                 </field>
-                <field id="template_file" translate="label" type="file" sortOrder="18" showInDefault="1"
+                <field id="template_file" translate="label" type="file" sortOrder="20" showInDefault="1"
                        showInWebsite="1">
                     <label>Template File</label>
                     <backend_model>Bold\CheckoutSelfHosted\Model\Config\Backend\File\Js</backend_model>
@@ -36,7 +36,7 @@
                         If no one file uploaded, standard will be used as fallback.
                     ]]></comment>
                 </field>
-                <field id="template_url" translate="label" type="text" sortOrder="75" showInDefault="1"
+                <field id="template_url" translate="label" type="text" sortOrder="25" showInDefault="1"
                        showInWebsite="1">
                     <label>Checkout Experience Templates App Url</label>
                     <validate>required-url</validate>
@@ -47,6 +47,13 @@
                         Example: http://localhost:8080<br>
                         If this field filled up, uploaded and fallback template file will be ignored.
                     ]]></comment>
+                </field>
+                <field id="environment_type" translate="label" type="text" sortOrder="30" showInDefault="1"
+                       showInWebsite="1">
+                    <label>Environment Type</label>
+                    <depends>
+                        <field id="is_enabled">1</field>
+                    </depends>
                 </field>
             </group>
         </section>

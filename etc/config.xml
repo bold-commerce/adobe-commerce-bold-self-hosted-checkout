@@ -7,6 +7,7 @@
                 <is_enabled>0</is_enabled>
                 <template_type>three_page</template_type>
                 <template_url/>
+                <environment_type>production</environment_type>
             </bold_checkout_self_hosted>
         </checkout>
     </default>

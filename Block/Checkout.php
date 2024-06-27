@@ -229,4 +229,16 @@ class Checkout extends Template
     {
         return $this->checkoutSession->getBoldCheckoutData()['data']['public_order_id'] ?? '';
     }
+
+    /**
+     * Retrieve environment type.
+     *
+     * @return string
+     */
+    public function getEnvironmentType(): string
+    {
+        $websiteId = (int)$this->checkoutSession->getQuote()->getStore()->getWebsiteId();
+
+        return $this->config->getEnvironmentType($websiteId);
+    }
 }

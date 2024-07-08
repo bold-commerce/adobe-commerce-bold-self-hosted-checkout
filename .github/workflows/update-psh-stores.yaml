@@ -1,0 +1,39 @@
+name: Update platform.sh stores
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_stores:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Install platform CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/platformsh/cli/main/installer.sh | bash
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo -n '${{ secrets.SSH_KEY }}' > ~/.ssh/id_rsa
+          chmod 0600 ~/.ssh/id_rsa
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+
+      - name: Update projects
+        env:
+          PLATFORMSH_CLI_TOKEN: ${{ secrets.PLATFORMSH_CLI_TOKEN }}
+        run: |
+          PROJECTS=`platform project:list --pipe`
+          for PROJECT in $PROJECTS;
+          do
+            echo "Updating project $PROJECT"
+            platform project:get --no-interaction $PROJECT $PROJECT
+            cd $PROJECT
+            date > timestamp
+            git add timestamp
+            platform push --no-wait
+            cd ..
+          done
